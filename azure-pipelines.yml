@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  name: solid parakeet
+  name: Default
 
 variables:
   solution: '**/*.sln'
