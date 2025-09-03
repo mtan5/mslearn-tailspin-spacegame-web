@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  name: MTAN5
+  name: mtan5
 
 variables:
   solution: '**/*.sln'
