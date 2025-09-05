@@ -19,10 +19,17 @@ steps:
     packageType: sdk
     version: '6.x'
 
-- task: Npm@1
-  displayName: 'Run npm install'
+#- task: Npm@1
+#  displayName: 'Run npm install'
+#  inputs:
+#    verbose: false
+- task: UseNode@1
+  displayName: 'Install Node.js latest'
   inputs:
-    verbose: false
+    versionSpec: '18.x' # Or 'latest' for the absolute latest, or a specific major version like '20.x'
+    checkLatest: true # Ensures the latest patch version within the specified major/LTS release
+- script: npm install
+- script: npm test
 
 - script: './node_modules/.bin/node-sass Tailspin.SpaceGame.Web/wwwroot --output Tailspin.SpaceGame.Web/wwwroot'
   displayName: 'Compile Sass assets'
