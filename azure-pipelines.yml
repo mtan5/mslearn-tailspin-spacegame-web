@@ -41,6 +41,14 @@ steps:
   displayName: 'Write build info'
   workingDirectory: Tailspin.SpaceGame.Web/wwwroot
 
+#added
+- task: UseDotNet@2
+  displayName: 'Install .NET SDK version 8.0.x'
+  inputs:
+    packageType: 'sdk'
+    version: '8.0.x' # Or a specific version like '8.0.200'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
   inputs:
