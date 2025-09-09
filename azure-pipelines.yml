@@ -1,13 +1,10 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
-- main
+- '*'
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-20.04'
+  demands:
+  - npm
 
 variables:
   buildConfiguration: 'Release'
@@ -18,20 +15,12 @@ steps:
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
   inputs:
-    packageType: sdk
     version: '$(dotnetSdkVersion)'
 
-#- task: Npm@1
-#  displayName: 'Run npm install'
-#  inputs:
-#    verbose: false
-- task: UseNode@1
-  displayName: 'Install Node.js latest'
+- task: Npm@1
+  displayName: 'Run npm install'
   inputs:
-    versionSpec: '18.x' # Or 'latest' for the absolute latest, or a specific major version like '20.x'
-    checkLatest: true # Ensures the latest patch version within the specified major/LTS release
-- script: npm install
-- script: npm test
+    verbose: false
 
 - script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
   displayName: 'Compile Sass assets'
@@ -42,14 +31,6 @@ steps:
 - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
   displayName: 'Write build info'
   workingDirectory: $(wwwrootDir)
-
-#added
-- task: UseDotNet@2
-  displayName: 'Install .NET SDK version 8.0.x'
-  inputs:
-    packageType: 'sdk'
-    version: '8.0.x' # Or a specific version like '8.0.200'
-    installationPath: $(Agent.ToolsDirectory)/dotnet
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
@@ -63,7 +44,7 @@ steps:
     command: 'build'
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
-  
+
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
   inputs:
